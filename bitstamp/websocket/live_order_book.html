@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel=stylesheet type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel=stylesheet type='text/css'>
+		<meta charset=utf-8>
+		<title>Bitstamp live order book example</title>
+		<style>
+			body {font-family:'Roboto', sans-serif;width:610px;margin:0 auto;}
+			h1 {font-size:30px;color:#666;margin:0 0 20px 0;text-align:center;}
+			.column {width:300px;display:inline-block;}
+			.column h2 {text-align:left;}
+			.column:nth-child(3) h2 {text-align:right;}
+			.column:nth-child(3) div {text-align:right;}
+		</style>
+	</head>
+	<body>
+		<h1>Bitstamp order book</h1>
+		<div class=column>
+		<h2>Bids</h2>
+		<div id=bids_placeholder>waiting for orders...</div>
+		</div>
+		<div class=column>
+		<h2>Asks</h2>
+		<div id=asks_placeholder>waiting for orders...</div>
+		</div>
+		<script src="https://d3dy5gmtp8yhk7.cloudfront.net/2.1/pusher.min.js"></script>
+		<script>
+			var bidsPlaceholder = document.getElementById("bids_placeholder"),
+					asksPlaceholder = document.getElementById("asks_placeholder"),
+					pusher = new Pusher('de504dc5763aeef9ff52'),
+					orderBookChannel = pusher.subscribe('order_book'),
+					i = 0;
+
+			orderBookChannel.bind('data', function (data) {
+					bidsPlaceholder.innerHTML = '';
+					asksPlaceholder.innerHTML = '';
+
+					for(i = 0; i < data.bids.length; i += 1) {
+							bidsPlaceholder.innerHTML = bidsPlaceholder.innerHTML + data.bids[i][1] + ' BTC @ ' + data.bids[i][0] + ' USD' + '<br />';
+					}
+					for(i = 0; i < data.asks.length; i += 1) {
+							asksPlaceholder.innerHTML = asksPlaceholder.innerHTML + data.asks[i][1] + ' BTC @ ' + data.asks[i][0] + ' USD' + '<br />';
+					}
+			});
+		</script>
+	</body>
+</html>
